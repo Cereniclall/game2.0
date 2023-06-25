@@ -1,22 +1,36 @@
-import '../css/style.css'
-import { Actor, Engine, Vector } from "excalibur"
-import { Resources, ResourceLoader } from './resources.js'
+import '../css/style.css';
+import {Actor, Engine, Label, Physics, Vector} from 'excalibur';
+import {Resources, ResourceLoader} from './resources.js';
+import {RunKirbo} from './runKirbo.js';
+import {Start} from './start.js';
+import {GameOver} from './gameover.js';
+import {Pause} from './pause.js';
 
 export class Game extends Engine {
 
     constructor() {
-        super({ width: 800, height: 600 })
-        this.start(ResourceLoader).then(() => this.startGame())
+        super({
+            width: 1450,
+            height: 780,
+        });
+        this.start(ResourceLoader).then(() => this.startGame());
     }
 
     startGame() {
-        console.log("start de game!")
-        const fish = new Actor()
-        fish.graphics.use(Resources.Fish.toSprite())
-        fish.pos = new Vector(400, 300)
-        fish.vel = new Vector(-10,0)
-        this.add(fish)
+        localStorage.setItem('scores', '[]');
+        this.addScene('start', new Start());
+        this.addScene('runKirbo', new RunKirbo());
+        this.addScene('gameover', new GameOver());
+        this.addScene('pause', new Pause());
+        // this.showDebug(true);
+        this.goToScene('start');
+
+
+    }
+
+    onPreUpdate(_engine, _delta) {
+        console.log(this.currentScene.actors.length);
     }
 }
 
-new Game()
+new Game();
